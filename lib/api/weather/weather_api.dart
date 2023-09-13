@@ -74,6 +74,7 @@ class WeatherApi {
 
   Future<WeatherFutureModel?> getForecastFutureApi(
       String location, String date) async {
+
     try {
       var headers = {
         ApiConstant.accept: ApiConstant.acceptValue,

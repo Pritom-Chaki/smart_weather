@@ -46,7 +46,7 @@ class Forecast {
 
 class Forecastday {
   final DateTime? date;
-  final int? dateEpoch;
+  final dynamic dateEpoch;
   final Day? day;
   final Astro? astro;
   final List<Hour>? hour;
@@ -121,21 +121,21 @@ class Astro {
 }
 
 class Day {
-  final double? maxtempC;
-  final double? maxtempF;
-  final int? mintempC;
-  final int? mintempF;
-  final double? avgtempC;
-  final double? avgtempF;
-  final double? maxwindMph;
-  final double? maxwindKph;
-  final double? totalprecipMm;
-  final double? totalprecipIn;
-  final double? avgvisKm;
-  final int? avgvisMiles;
-  final int? avghumidity;
+  final dynamic maxtempC;
+  final dynamic maxtempF;
+  final dynamic mintempC;
+  final dynamic mintempF;
+  final dynamic avgtempC;
+  final dynamic avgtempF;
+  final dynamic maxwindMph;
+  final dynamic maxwindKph;
+  final dynamic totalprecipMm;
+  final dynamic totalprecipIn;
+  final dynamic avgvisKm;
+  final dynamic avgvisMiles;
+  final dynamic avghumidity;
   final Condition? condition;
-  final int? uv;
+  final dynamic uv;
 
   Day({
     this.maxtempC,
@@ -199,7 +199,7 @@ class Day {
 class Condition {
   final String? text;
   final String? icon;
-  final int? code;
+  final dynamic code;
 
   Condition({
     this.text,
@@ -225,38 +225,38 @@ class Condition {
 }
 
 class Hour {
-  final int? timeEpoch;
+  final dynamic timeEpoch;
   final String? time;
-  final double? tempC;
-  final double? tempF;
-  final int? isDay;
+  final dynamic tempC;
+  final dynamic tempF;
+  final dynamic isDay;
   final Condition? condition;
-  final double? windMph;
-  final double? windKph;
-  final int? windDegree;
+  final dynamic windMph;
+  final dynamic windKph;
+  final dynamic windDegree;
   final String? windDir;
-  final int? pressureMb;
-  final double? pressureIn;
-  final double? precipMm;
-  final double? precipIn;
-  final int? humidity;
-  final int? cloud;
-  final double? feelslikeC;
-  final double? feelslikeF;
-  final double? windchillC;
-  final double? windchillF;
-  final double? heatindexC;
-  final double? heatindexF;
-  final double? dewpointC;
-  final double? dewpointF;
-  final int? willItRain;
-  final int? chanceOfRain;
-  final int? willItSnow;
-  final int? chanceOfSnow;
-  final double? visKm;
-  final int? visMiles;
-  final double? gustMph;
-  final double? gustKph;
+  final dynamic pressureMb;
+  final dynamic pressureIn;
+  final dynamic precipMm;
+  final dynamic precipIn;
+  final dynamic humidity;
+  final dynamic cloud;
+  final dynamic feelslikeC;
+  final dynamic feelslikeF;
+  final dynamic windchillC;
+  final dynamic windchillF;
+  final dynamic heatindexC;
+  final dynamic heatindexF;
+  final dynamic dewpointC;
+  final dynamic dewpointF;
+  final dynamic willItRain;
+  final dynamic chanceOfRain;
+  final dynamic willItSnow;
+  final dynamic chanceOfSnow;
+  final dynamic visKm;
+  final dynamic visMiles;
+  final dynamic gustMph;
+  final dynamic gustKph;
 
   Hour({
     this.timeEpoch,
@@ -372,10 +372,10 @@ class Location {
   final String? name;
   final String? region;
   final String? country;
-  final double? lat;
-  final double? lon;
+  final dynamic lat;
+  final dynamic lon;
   final String? tzId;
-  final int? localtimeEpoch;
+  final dynamic localtimeEpoch;
   final String? localtime;
 
   Location({
