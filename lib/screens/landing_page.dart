@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+import 'package:smart_weather/screens/task_screen/task_list_screen.dart';
 import 'package:smart_weather/screens/weather_screens/weather_landing_page.dart';
 
 import 'weather_screens/search_location_page.dart';
@@ -30,12 +31,13 @@ class _LandingPageState extends State<LandingPage> {
 
         appBar: AppBar(
           automaticallyImplyLeading: false,
+
           title: Image.asset(
             "assets/images/full_logo.png",
             height: 80,
             width: 150,
           ),
-          backgroundColor: Colors.white10,
+          backgroundColor: Colors.white,
           actions: [
             IconButton(onPressed: () {
               pushNewScreen(
@@ -103,8 +105,8 @@ class _LandingPageState extends State<LandingPage> {
   List<Widget> _buildScreens() {
     return [
       const WeatherLandingPage(),
-      const WeatherLandingPage(),
-      const WeatherLandingPage(),
+      const TaskListScreen(),
+      const TaskListScreen(),
       const WeatherLandingPage(),
     ];
   }

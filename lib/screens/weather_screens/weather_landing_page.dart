@@ -6,9 +6,12 @@ import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import '../../api/weather/weather_api.dart';
 import '../../components/location/fetch_location.dart';
+import '../../models/local_task_model.dart';
 import '../../models/weather_forecast_model.dart';
 import '../../utils/constant_data.dart';
+import '../../utils/local_storage/hive_methods.dart';
 import '../../utils/local_storage/local_store_manager.dart';
+import '../task_screen/task_component.dart';
 extension StringCasingExtension on String {
   String toCapitalized() => length > 0 ?'${this[0].toUpperCase()}${substring(1).toLowerCase()}':'';
   String toTitleCase() => replaceAll(RegExp(' +'), ' ').split(' ').map((str) => str.toCapitalized()).join(' ');
@@ -24,9 +27,11 @@ class _WeatherLandingPageState extends State<WeatherLandingPage> {
   WeatherForecastModel? _data;
   LocationData? _locationData;
   List<Alert> alertList = [];
+  List<LocalTaskModel> tasks = [];
   @override
   void initState() {
     _getLocalData();
+    _getTaskList();
     super.initState();
   }
 
@@ -60,7 +65,13 @@ class _WeatherLandingPageState extends State<WeatherLandingPage> {
       }
     });
   }
-
+  void _getTaskList() {
+    HiveMethods().getTaskLists().then((value) {
+      setState(() {
+        tasks = value;
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,6 +80,7 @@ class _WeatherLandingPageState extends State<WeatherLandingPage> {
           ? RefreshIndicator(
               onRefresh: () async {
                 _getLocalData();
+                _getTaskList();
               },
               child: Container(
                 height: double.infinity,
@@ -208,49 +220,9 @@ class _WeatherLandingPageState extends State<WeatherLandingPage> {
   Widget _taskList() {
     return Expanded(
       child: ListView.builder(
-          itemCount: 2,
+          itemCount: tasks.length >2 ? 2 : tasks.length,
           itemBuilder: (c, int i) {
-            return Container(
-              margin:
-                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-              decoration: BoxDecoration(
-                  color: Colors.white54,
-                  borderRadius: BorderRadius.circular(10)),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Hallo My Task",
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                      Text(DateFormat("dd MMM").format(DateTime.now())),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const Icon(
-                        Icons.location_on_outlined,
-                        size: 20,
-                      ),
-                      Text(
-                        "Dhaka, Bangladesh",
-                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                              fontWeight: FontWeight.w500,
-                            ),
-                      ),
-                    ],
-                  ),
-                  LinearProgressIndicator(
-                    value: 0.3 * i,
-                  )
-                ],
-              ),
-            );
+            return TaskComponent(task: tasks[i],);
           }),
     );
   }
