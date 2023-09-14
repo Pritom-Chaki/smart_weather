@@ -1,7 +1,12 @@
+
 import 'package:location/location.dart';
 
 class FetchLocation {
+
+
   Future<LocationData?> getCurrentLocation() async {
+
+
     LocationData _currentPosition;
     Location location = Location();
     bool _serviceEnabled;

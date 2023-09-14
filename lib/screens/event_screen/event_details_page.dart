@@ -8,6 +8,8 @@ import '../../api/weather/weather_api.dart';
 
 import '../../models/weather_future_model.dart';
 
+
+
 class EventDetailsPage extends StatefulWidget {
   final CalendarEvent activeEvent;
   final CalendarPlugin calendarPlugin;
@@ -28,7 +30,11 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
     super.initState();
   }
 
-  _getWeatherData() {
+  _getWeatherData() async {
+    // List<Location> locations = await locationFromAddress(widget.activeEvent.location!);
+    //
+    // print("LOCATION activeEvent== ${widget.activeEvent.location!}");
+    // print("LOCATION == $locations");
     WeatherApi()
         .getForecastFutureApi(
             widget.activeEvent.location!,

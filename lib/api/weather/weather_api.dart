@@ -19,7 +19,7 @@ class WeatherApi {
       var request = http.Request(
           'GET',
           Uri.parse(
-              '${ApiConstant.baseUrl}/forecast.json?key=${ApiConstant.key}&q=$location&aqi=yes&days=5&alerts=yes'));
+              '${ApiConstant.baseUrl}/forecast.json?key=${ApiConstant.key}&q=$location&aqi=yes&days=6&alerts=yes'));
 
       request.headers.addAll(headers);
 

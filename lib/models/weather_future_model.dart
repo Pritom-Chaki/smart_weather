@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class WeatherFutureModel {
-  final Location? location;
+  final WLocation? location;
   final Forecast? forecast;
 
   WeatherFutureModel({
@@ -14,7 +14,7 @@ class WeatherFutureModel {
   String toJson() => json.encode(toMap());
 
   factory WeatherFutureModel.fromMap(Map<String, dynamic> json) => WeatherFutureModel(
-    location: json["location"] == null ? null : Location.fromMap(json["location"]),
+    location: json["location"] == null ? null : WLocation.fromMap(json["location"]),
     forecast: json["forecast"] == null ? null : Forecast.fromMap(json["forecast"]),
   );
 
@@ -368,7 +368,7 @@ class Hour {
   };
 }
 
-class Location {
+class WLocation {
   final String? name;
   final String? region;
   final String? country;
@@ -378,7 +378,7 @@ class Location {
   final dynamic localtimeEpoch;
   final String? localtime;
 
-  Location({
+  WLocation({
     this.name,
     this.region,
     this.country,
@@ -389,11 +389,11 @@ class Location {
     this.localtime,
   });
 
-  factory Location.fromJson(String str) => Location.fromMap(json.decode(str));
+  factory WLocation.fromJson(String str) => WLocation.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory Location.fromMap(Map<String, dynamic> json) => Location(
+  factory WLocation.fromMap(Map<String, dynamic> json) => WLocation(
     name: json["name"],
     region: json["region"],
     country: json["country"],

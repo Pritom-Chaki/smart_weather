@@ -13,9 +13,14 @@ import '../../utils/local_storage/hive_methods.dart';
 import '../../utils/local_storage/local_store_manager.dart';
 
 extension StringCasingExtension on String {
-  String toCapitalized() => length > 0 ?'${this[0].toUpperCase()}${substring(1).toLowerCase()}':'';
-  String toTitleCase() => replaceAll(RegExp(' +'), ' ').split(' ').map((str) => str.toCapitalized()).join(' ');
+  String toCapitalized() =>
+      length > 0 ? '${this[0].toUpperCase()}${substring(1).toLowerCase()}' : '';
+  String toTitleCase() => replaceAll(RegExp(' +'), ' ')
+      .split(' ')
+      .map((str) => str.toCapitalized())
+      .join(' ');
 }
+
 class WeatherLandingPage extends StatefulWidget {
   const WeatherLandingPage({Key? key}) : super(key: key);
 
@@ -65,6 +70,7 @@ class _WeatherLandingPageState extends State<WeatherLandingPage> {
       }
     });
   }
+
   void _getTaskList() {
     HiveMethods().getTaskLists().then((value) {
       setState(() {
@@ -72,6 +78,7 @@ class _WeatherLandingPageState extends State<WeatherLandingPage> {
       });
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,7 +98,12 @@ class _WeatherLandingPageState extends State<WeatherLandingPage> {
                         image:
                             CachedNetworkImageProvider(AppConstant.onBackImg))),
                 child: Column(
-                  children: [_weatherSummery(), _taskList(), _alertWidget()],
+                  children: [
+                    _weatherSummery(),
+                    _taskList(),
+                    _fiveDaysWeather(),
+                    _alertWidget()
+                  ],
                 ),
               ),
             )
@@ -220,9 +232,58 @@ class _WeatherLandingPageState extends State<WeatherLandingPage> {
   Widget _taskList() {
     return Expanded(
       child: ListView.builder(
-          itemCount: tasks.length >2 ? 2 : tasks.length,
+          itemCount: tasks.length > 2 ? 2 : tasks.length,
           itemBuilder: (c, int i) {
-            return Container();//TaskComponent(task: tasks[i],);
+            return Container(); //TaskComponent(task: tasks[i],);
+          }),
+    );
+  }
+
+  Widget _fiveDaysWeather() {
+    return Container(
+      height: 210,
+      padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 8.0),
+      decoration: BoxDecoration(
+          color: Colors.grey.shade200.withOpacity(0.2),
+          borderRadius: const BorderRadius.all(Radius.circular(8.0))),
+      child: ListView.builder(
+          itemCount: _data!.forecast!.forecastday!.length,
+          itemBuilder: (c, i) {
+            Forecastday _fDay = _data!.forecast!.forecastday![i];
+            if(i == 0) {
+              return const SizedBox();
+            }
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  DateFormat("dd MMM").format(_fDay.date!),
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white),
+                ),
+                Text(
+                  DateFormat("EEE").format(_fDay.date!),
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white),
+                ),
+                Image.network(
+                    "https:${_fDay.day!.condition!.icon}", height: 40, width: 40,),
+
+                Text(
+                  "${_fDay.day!.mintempC}° / ${_fDay.day!.maxtempC}°",
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white),
+                ),
+
+              ],
+            );
           }),
     );
   }
@@ -286,8 +347,13 @@ class _WeatherLandingPageState extends State<WeatherLandingPage> {
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape:  RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          title: const Icon(Icons.crisis_alert_rounded, color: Colors.red, size: 40,),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          title: const Icon(
+            Icons.crisis_alert_rounded,
+            color: Colors.red,
+            size: 40,
+          ),
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 3.0, vertical: 3.0),
           content: SingleChildScrollView(
@@ -301,7 +367,6 @@ class _WeatherLandingPageState extends State<WeatherLandingPage> {
                     alert.headline!,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.titleLarge,
-
                   ),
                   const SizedBox(height: 10.0),
                   Text(
