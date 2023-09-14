@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
-import 'package:smart_weather/screens/task_screen/task_list_screen.dart';
 import 'package:smart_weather/screens/weather_screens/weather_landing_page.dart';
-
+import 'event_screen/event_list_screen.dart';
 import 'weather_screens/search_location_page.dart';
 
 class LandingPage extends StatefulWidget {
@@ -105,8 +104,8 @@ class _LandingPageState extends State<LandingPage> {
   List<Widget> _buildScreens() {
     return [
       const WeatherLandingPage(),
-      const TaskListScreen(),
-      const TaskListScreen(),
+      const EventListScreen(),
+      const EventListScreen(),
       const WeatherLandingPage(),
     ];
   }

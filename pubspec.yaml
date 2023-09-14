@@ -36,7 +36,7 @@ dependencies:
   cached_network_image: ^3.2.3
   location: ^5.0.3
   geolocator: ^10.0.1
-
+  manage_calendar_events: ^2.0.2
 
 
 dev_dependencies:

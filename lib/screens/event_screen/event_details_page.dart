@@ -2,20 +2,24 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:manage_calendar_events/manage_calendar_events.dart';
 
 import '../../api/weather/weather_api.dart';
-import '../../models/local_task_model.dart';
+
 import '../../models/weather_future_model.dart';
 
-class TaskDetailsPage extends StatefulWidget {
-  final LocalTaskModel task;
-  const TaskDetailsPage({Key? key, required this.task}) : super(key: key);
+class EventDetailsPage extends StatefulWidget {
+  final CalendarEvent activeEvent;
+  final CalendarPlugin calendarPlugin;
+  const EventDetailsPage(
+      {Key? key, required this.activeEvent, required this.calendarPlugin})
+      : super(key: key);
 
   @override
-  State<TaskDetailsPage> createState() => _TaskDetailsPageState();
+  State<EventDetailsPage> createState() => _EventDetailsPageState();
 }
 
-class _TaskDetailsPageState extends State<TaskDetailsPage> {
+class _EventDetailsPageState extends State<EventDetailsPage> {
   WeatherFutureModel? _weatherData;
   final Color _textColor = Colors.black87;
   @override
@@ -27,9 +31,9 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
   _getWeatherData() {
     WeatherApi()
         .getForecastFutureApi(
-            widget.task.location,
+            widget.activeEvent.location!,
             DateFormat("yyyy-MM-dd").format(
-              widget.task.date,
+              widget.activeEvent.startDate!,
             ))
         .then((value) {
       if (value != null) {
@@ -43,11 +47,18 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Event Details"),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
             _taskCard(),
-            _weatherData != null ?  _weatherWidget() : const SizedBox(),
+            _weatherData != null ? _weatherWidget() :  Container(
+                height: 100,
+                alignment: Alignment.center,
+
+                child: const Text("Location Not Found")),
           ],
         ),
       ),
@@ -62,27 +73,25 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
         child: Column(
           children: [
             Text(
-              widget.task.task,
+              widget.activeEvent.title!,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             Text(
-              widget.task.details,
+              widget.activeEvent.description!,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             Row(
               children: [
-                const SizedBox(
-                  width: 8.0,
-                ),
+                const SizedBox(width: 8.0),
                 const Icon(
                   Icons.calendar_month_outlined,
                   color: Colors.blue,
                 ),
                 Text(
                   DateFormat("dd MMM yyyy").format(
-                    widget.task.date,
+                    widget.activeEvent.startDate!,
                   ),
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
                         fontWeight: FontWeight.w500,
@@ -90,20 +99,83 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                 ),
                 const Spacer(),
                 const Icon(
-                  Icons.location_on,
+                  Icons.calendar_month_outlined,
                   color: Colors.red,
                 ),
                 Text(
-                  widget.task.location,
+                  DateFormat("dd MMM yyyy").format(
+                    widget.activeEvent.endDate!,
+                  ),
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
                         fontWeight: FontWeight.w500,
                       ),
                 ),
-                const SizedBox(
-                  width: 8.0,
-                ),
+                const SizedBox(width: 8.0),
               ],
-            )
+            ),
+            const SizedBox(height: 5.0),
+            Row(
+              children: [
+                const SizedBox(width: 8.0),
+                const Icon(
+                  Icons.location_on,
+                  color: Colors.red,
+                ),
+                Text(
+                  widget.activeEvent.location!.isNotEmpty ?  widget.activeEvent.location! : 'N/A',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleSmall!
+                      .copyWith(fontWeight: FontWeight.w500, fontSize: 16),
+                ),
+                const Spacer(),
+
+                Text(
+                  widget.activeEvent.isAllDay !=null ? 'All Day Event' : '',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleSmall!
+                      .copyWith(fontWeight: FontWeight.w500, fontSize: 16),
+                ),
+                const SizedBox(width: 8.0),
+              ],
+            ),
+            const SizedBox(height: 5.0),
+            Row(
+              children: [
+                const SizedBox(width: 8.0),
+                const Icon(
+                  Icons.notifications_active,
+                  color: Colors.blue,
+                ),
+                const SizedBox(
+                  width: 5.0,
+                ),
+                Text(
+                  widget.activeEvent.hasAlarm.toString(),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleSmall!
+                      .copyWith(fontWeight: FontWeight.w500, fontSize: 16),
+                ),
+                const Spacer(),
+                const Icon(
+                  Icons.alarm_on,
+                  color: Colors.green,
+                ),
+                const SizedBox(
+                  width: 5.0,
+                ),
+                Text(
+                  "${widget.activeEvent.reminder?.minutes ?? 'N/A'}",
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleSmall!
+                      .copyWith(fontWeight: FontWeight.w500, fontSize: 16),
+                ),
+                const SizedBox(width: 8.0),
+              ],
+            ),
           ],
         ),
       ),
@@ -121,14 +193,13 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   CachedNetworkImage(
                       imageUrl:
-                      "https:${_weatherData!.forecast!.forecastday![0].day!.condition!.icon}"),
+                          "https:${_weatherData!.forecast!.forecastday![0].day!.condition!.icon}"),
                   Text(
                     "${_weatherData!.forecast!.forecastday![0].day!.avgtempC}°C",
                     style: Theme.of(context)
@@ -137,7 +208,6 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                         .copyWith(fontSize: 40, color: _textColor),
                     textAlign: TextAlign.start,
                   ),
-
                 ],
               ),
               Text(
@@ -159,7 +229,8 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                 itemCount: _weatherData!.forecast!.forecastday![0].hour!.length,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (c, i) {
-                  Hour _hourData =  _weatherData!.forecast!.forecastday![0].hour![i];
+                  Hour _hourData =
+                      _weatherData!.forecast!.forecastday![0].hour![i];
                   return Container(
                     color: Colors.grey.shade200,
                     alignment: Alignment.center,
@@ -181,8 +252,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                               .copyWith(fontWeight: FontWeight.w500),
                         ),
                         CachedNetworkImage(
-                          imageUrl:
-                              "https:${_hourData.condition!.icon}",
+                          imageUrl: "https:${_hourData.condition!.icon}",
                           height: 40,
                           width: 40,
                         ),
@@ -209,26 +279,43 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _svgInfoWidget("${_weatherData!.forecast!.forecastday![0].day!.totalprecipMm} mm", "assets/icons/rain.svg", 40),
                         _svgInfoWidget(
-                            "${_weatherData!.forecast!.forecastday![0].day!.maxwindKph} km/h", "assets/icons/win_speed.svg", 35),
+                            "${_weatherData!.forecast!.forecastday![0].day!.totalprecipMm} mm",
+                            "assets/icons/rain.svg",
+                            40),
                         _svgInfoWidget(
-                            "${_weatherData!.forecast!.forecastday![0].day!.avghumidity} %", "assets/icons/humidity.svg", 35),
+                            "${_weatherData!.forecast!.forecastday![0].day!.maxwindKph} km/h",
+                            "assets/icons/win_speed.svg",
+                            35),
                         _svgInfoWidget(
-                            "${_weatherData!.forecast!.forecastday![0].day!.avgvisKm} km", "assets/icons/visual.svg", 35),
+                            "${_weatherData!.forecast!.forecastday![0].day!.avghumidity} %",
+                            "assets/icons/humidity.svg",
+                            35),
+                        _svgInfoWidget(
+                            "${_weatherData!.forecast!.forecastday![0].day!.avgvisKm} km",
+                            "assets/icons/visual.svg",
+                            35),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         _svgInfoWidget(
-                            "${_weatherData!.forecast!.forecastday![0].astro!.sunrise}", "assets/icons/sun_rise.svg", 35),
+                            "${_weatherData!.forecast!.forecastday![0].astro!.sunrise}",
+                            "assets/icons/sun_rise.svg",
+                            35),
                         _svgInfoWidget(
-                            "${_weatherData!.forecast!.forecastday![0].astro!.sunset}", "assets/icons/sun_set.svg", 35),
+                            "${_weatherData!.forecast!.forecastday![0].astro!.sunset}",
+                            "assets/icons/sun_set.svg",
+                            35),
                         _svgInfoWidget(
-                            "${_weatherData!.forecast!.forecastday![0].astro!.moonrise}", "assets/icons/moon_rise.svg", 35),
+                            "${_weatherData!.forecast!.forecastday![0].astro!.moonrise}",
+                            "assets/icons/moon_rise.svg",
+                            35),
                         _svgInfoWidget(
-                            "${_weatherData!.forecast!.forecastday![0].astro!.moonset}", "assets/icons/moon_set.svg", 35),
+                            "${_weatherData!.forecast!.forecastday![0].astro!.moonset}",
+                            "assets/icons/moon_set.svg",
+                            35),
                       ],
                     ),
                   ],

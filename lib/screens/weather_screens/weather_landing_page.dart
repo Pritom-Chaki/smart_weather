@@ -11,7 +11,7 @@ import '../../models/weather_forecast_model.dart';
 import '../../utils/constant_data.dart';
 import '../../utils/local_storage/hive_methods.dart';
 import '../../utils/local_storage/local_store_manager.dart';
-import '../task_screen/task_component.dart';
+
 extension StringCasingExtension on String {
   String toCapitalized() => length > 0 ?'${this[0].toUpperCase()}${substring(1).toLowerCase()}':'';
   String toTitleCase() => replaceAll(RegExp(' +'), ' ').split(' ').map((str) => str.toCapitalized()).join(' ');
@@ -222,7 +222,7 @@ class _WeatherLandingPageState extends State<WeatherLandingPage> {
       child: ListView.builder(
           itemCount: tasks.length >2 ? 2 : tasks.length,
           itemBuilder: (c, int i) {
-            return TaskComponent(task: tasks[i],);
+            return Container();//TaskComponent(task: tasks[i],);
           }),
     );
   }
