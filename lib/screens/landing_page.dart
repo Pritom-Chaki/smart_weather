@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+import 'package:smart_weather/screens/profile_page/profile_page.dart';
 import 'package:smart_weather/screens/weather_screens/weather_landing_page.dart';
 import 'event_screen/event_list_screen.dart';
 import 'weather_screens/search_location_page.dart';
@@ -106,7 +107,7 @@ class _LandingPageState extends State<LandingPage> {
       const WeatherLandingPage(),
       const EventListScreen(),
       const EventListScreen(),
-      const WeatherLandingPage(),
+      const ProfileScreen(),
     ];
   }
 

@@ -13,15 +13,12 @@ class EventListScreen extends StatefulWidget {
 }
 
 class _EventListScreenState extends State<EventListScreen> {
-
   List<LocalTaskModel> tasks = [];
   final CalendarPlugin _myPlugin = CalendarPlugin();
   @override
   void initState() {
-
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +31,7 @@ class _EventListScreenState extends State<EventListScreen> {
         List<Calendar> calendars = snapshot.data!;
         return ListView.builder(
             shrinkWrap: true,
+            // physics: const NeverScrollableScrollPhysics(),
             itemCount: calendars.length,
             itemBuilder: (context, index) {
               Calendar calendar = calendars[index];
@@ -45,7 +43,16 @@ class _EventListScreenState extends State<EventListScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(calendar.name!, style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500),),
+                        Expanded(
+                            child: Text(
+                          calendar.name!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .copyWith(fontWeight: FontWeight.w500),
+                        )),
                         const Icon(Icons.arrow_forward),
                       ],
                     )),
@@ -82,26 +89,23 @@ class _EventListScreenState extends State<EventListScreen> {
             image: DecorationImage(
                 fit: BoxFit.cover,
                 image: CachedNetworkImageProvider(AppConstant.onBackImg2))),
-
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Event Group List',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge!
-                        .copyWith(fontWeight: FontWeight.w500),
-                  ),
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  'Event Group List',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge!
+                      .copyWith(fontWeight: FontWeight.w500),
                 ),
               ),
-              _futureBuilder,
-            ],
-          ),
+            ),
+            Expanded(child: _futureBuilder),
+          ],
         ),
       ),
     );
@@ -116,6 +120,4 @@ class _EventListScreenState extends State<EventListScreen> {
 
     return _myPlugin.getCalendars();
   }
-
-
 }

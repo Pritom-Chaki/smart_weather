@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
@@ -46,8 +47,7 @@ class _WeatherLandingPageState extends State<WeatherLandingPage> {
         setState(() {
           _locationData = value;
         });
-
-        debugPrint("Location Value = $value");
+        _getWeatherData("${value.latitude},${value.longitude}");
       }
     });
   }
@@ -56,6 +56,8 @@ class _WeatherLandingPageState extends State<WeatherLandingPage> {
     LocalStorageManager.readData(AppConstant.location).then((value) {
       if (value != null) {
         _getWeatherData(value);
+      } else {
+        _getLocation();
       }
     });
   }
@@ -67,6 +69,8 @@ class _WeatherLandingPageState extends State<WeatherLandingPage> {
           _data = value;
           alertList = value.alerts!.alert!;
         });
+      } else {
+        _getLocation();
       }
     });
   }
@@ -251,7 +255,7 @@ class _WeatherLandingPageState extends State<WeatherLandingPage> {
           itemCount: _data!.forecast!.forecastday!.length,
           itemBuilder: (c, i) {
             Forecastday _fDay = _data!.forecast!.forecastday![i];
-            if(i == 0) {
+            if (i == 0) {
               return const SizedBox();
             }
             return Row(
@@ -272,8 +276,10 @@ class _WeatherLandingPageState extends State<WeatherLandingPage> {
                       color: Colors.white),
                 ),
                 Image.network(
-                    "https:${_fDay.day!.condition!.icon}", height: 40, width: 40,),
-
+                  "https:${_fDay.day!.condition!.icon}",
+                  height: 40,
+                  width: 40,
+                ),
                 Text(
                   "${_fDay.day!.mintempC}° / ${_fDay.day!.maxtempC}°",
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(
@@ -281,7 +287,6 @@ class _WeatherLandingPageState extends State<WeatherLandingPage> {
                       fontWeight: FontWeight.w500,
                       color: Colors.white),
                 ),
-
               ],
             );
           }),

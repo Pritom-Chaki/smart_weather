@@ -40,11 +40,11 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               //  width: 300,
               padding:
                   const EdgeInsets.symmetric(vertical: 0.0, horizontal: 100.0),
-              decoration: const BoxDecoration(
+              decoration:  BoxDecoration(
                   image: DecorationImage(
-                      fit: BoxFit.contain,
+                      fit: BoxFit.fill,
                       image: CachedNetworkImageProvider(
-                        'https://bridgingapps.org/wp-content/uploads/2023/07/feature-image-1200-%C3%97-550-px-9.png',
+                        urlImage,
                       ))),
             ),
             const SizedBox(
@@ -57,7 +57,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 textAlign: TextAlign.center,
                 style: Theme.of(context)
                     .textTheme
-                    .bodyMedium!
+                    .bodyLarge!
                     .copyWith(fontWeight: FontWeight.w500),
               ),
             ),
@@ -80,19 +80,19 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
             children: [
               buildPage(
                 color: Theme.of(context).colorScheme.background,
-                urlImage: 'assets/images/1_welcome.svg',
-                title: "We provide professional service at a friendly price",
+                urlImage: 'https://bridgingapps.org/wp-content/uploads/2023/07/feature-image-1200-%C3%97-550-px-9.png',
+                title: "This weather app is one of best free weather apps with full features.",
               ),
               buildPage(
                 color: Theme.of(context).colorScheme.background,
-                urlImage: 'assets/images/2_create.svg',
+                urlImage: 'https://www.gizmochina.com/wp-content/uploads/2020/01/best-weather-apps.jpg',
                 title:
-                    'The best result and your satisfaction is our top priority',
+                    'Daily weather forecast for the next 5 days.',
               ),
               buildPage(
                 color: Theme.of(context).colorScheme.background,
-                urlImage: 'assets/images/3_profile.svg',
-                title: 'Lets make awesome changes to your home',
+                urlImage: "https://i.ytimg.com/vi/KQZzebidl2k/maxresdefault.jpg",
+                title: 'You will get weather information to prepare your plans.'
               ),
             ],
           ),
@@ -115,7 +115,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 child: SmoothPageIndicator(
                   controller: controller,
                   count: 3,
-                  effect: const WormEffect(),
+                  effect: const ExpandingDotsEffect(),
                   onDotClicked: (index) => controller.animateToPage(index,
                       duration: const Duration(milliseconds: 500),
                       curve: Curves.easeIn),

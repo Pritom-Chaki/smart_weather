@@ -13,6 +13,9 @@ class WeatherApi {
   // Weather Forecast api
   Future<WeatherForecastModel?> getForecastDataApi(String location) async {
     try {
+      if(location == null ||location.isEmpty){
+        location = 'London';
+      }
       var headers = {
         ApiConstant.accept: ApiConstant.acceptValue,
       };
@@ -26,7 +29,7 @@ class WeatherApi {
       http.StreamedResponse response = await request.send();
 
       var str = await response.stream.bytesToString();
-      debugPrint("Location ==== $str");
+      debugPrint("Location Data ==== $str");
       if (response.statusCode == 200) {
         return WeatherForecastModel.fromJson(str);
       } else {

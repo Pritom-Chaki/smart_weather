@@ -37,10 +37,12 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   _getLocation() {
+    debugPrint("******Enter Get Location Splash Screen");
     FetchLocation().getCurrentLocation().then((value) {
       if (value != null) {
-        LocalStorageManager.saveData(AppConstant.location, "${value.latitude}, ${value.longitude}");
-        debugPrint("Location Value = $value");
+        LocalStorageManager.saveData(
+            AppConstant.location, "${value.latitude}, ${value.longitude}");
+        debugPrint("Location Value Splash Screen = $value");
       }
     });
   }
