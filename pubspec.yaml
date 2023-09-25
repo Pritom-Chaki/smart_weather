@@ -38,6 +38,7 @@ dependencies:
   flutter_local_notifications: ^15.1.1
 #  geolocator: ^10.0.1
   manage_calendar_events: ^2.0.2
+  workmanager: ^0.5.1
 
 
 dev_dependencies:

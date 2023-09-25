@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:smart_weather/screens/profile_page/profile_page.dart';
 import 'package:smart_weather/screens/weather_screens/weather_landing_page.dart';
+import '../components/notification/notification_service.dart';
 import 'event_screen/event_list_screen.dart';
 import 'weather_screens/search_location_page.dart';
 
@@ -17,6 +19,8 @@ class _LandingPageState extends State<LandingPage> {
   TextStyle navBtnTextStyle =
       const TextStyle(fontWeight: FontWeight.w600, fontSize: 16);
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  static final FlutterLocalNotificationsPlugin _notificationsPlugin =
+  FlutterLocalNotificationsPlugin();
   @override
   void initState() {
     _controller = PersistentTabController(initialIndex: 0);
@@ -48,7 +52,9 @@ class _LandingPageState extends State<LandingPage> {
               );
 
             }, icon: const   Icon(Icons.search, color: Colors.blue,)),
-            IconButton(onPressed: () {}, icon: const   Icon(Icons.notification_important, color: Colors.blue,)),
+            IconButton(onPressed: () {
+              LocalNotificationService.showScheduleNotification(title: "Noti Title", body: "Noti Body",);
+            }, icon: const   Icon(Icons.notification_important, color: Colors.blue,)),
 
           ],
         ),

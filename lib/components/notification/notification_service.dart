@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class LocalNotificationService {
@@ -6,95 +6,78 @@ class LocalNotificationService {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  static void initialize() {
-    // Initialization  setting for android
-    const InitializationSettings initializationSettingsAndroid =
-        InitializationSettings(
-            android: AndroidInitializationSettings("@drawable/ic_launcher"));
-    _notificationsPlugin.initialize(
-      initializationSettingsAndroid,
-      // to handle event when we receive notification
-      onDidReceiveNotificationResponse: (details) {
-        if (details.input != null) {}
-      },
+  //notification initialize
+  static Future<void> initialize() async {
+    var androidInitialize =
+        const AndroidInitializationSettings('mipmap/ic_launcher');
+    var iOSInitialize = DarwinInitializationSettings(
+        requestAlertPermission: true,
+        requestBadgePermission: true,
+        requestSoundPermission: true,
+        onDidReceiveLocalNotification:
+            (int? id, String? title, String? body, String? payload) async {});
+    var initializationsSettings =
+        InitializationSettings(android: androidInitialize, iOS: iOSInitialize);
+    await _notificationsPlugin.initialize(initializationsSettings,
+        onDidReceiveNotificationResponse:
+            (NotificationResponse notificationResponse) async {});
+    debugPrint("_notificationsPlugin****");
+  }
+//notification details and design
+  static NotificationDetails notificationDetails() {
+    AndroidNotificationDetails androidPlatformChannelSpecifics =
+        const AndroidNotificationDetails(
+      "noti_channel_45454_sdssss_54544", "channel_name",
+      playSound: true,
+      //  sound: RawResourceAndroidNotificationSound('notification'),
+      importance: Importance.max,
+      priority: Priority.high,
+      icon: 'mipmap/ic_launcher',
     );
+
+    return NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+        iOS: const DarwinNotificationDetails());
   }
 
-  static Future<void> display(RemoteMessage message) async {
-    // To display the notification in device
-    try {
-      print(message.notification!.android!.sound);
-      final id = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-      NotificationDetails notificationDetails = NotificationDetails(
-        android: AndroidNotificationDetails(
-            message.notification!.android!.sound ?? "Channel Id",
-            message.notification!.android!.sound ?? "Main Channel",
-            groupKey: "gfg",
-            color: Colors.green,
-            importance: Importance.max,
-            sound: RawResourceAndroidNotificationSound(
-                message.notification!.android!.sound ?? "gfg"),
-
-            // different sound for
-            // different notification
-            playSound: true,
-            priority: Priority.high),
-      );
-      await _notificationsPlugin.show(id, message.notification?.title,
-          message.notification?.body, notificationDetails,
-          payload: message.data['route']);
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-  }
-
-  void messageListener(BuildContext context) {
-    // Either you can pass buildcontext or you
-    // can take a context from navigator key
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message in the foreground!');
-      print('Message data: ${message.data}');
-
-      if (message.notification != null) {
-        print(
-            'Message also contained a notification:  so it will pop up ${message.notification.body}');
-        showDialog(
-            context: context,
-            // context: navigatorKey!.currentContext!,
-            builder: ((BuildContext context) {
-              return DynamicDialog(
-                  title: message.notification.title,
-                  body: message.notification.body);
-            }));
-      }
-    });
-  }
-}
-
-class DynamicDialog extends StatefulWidget {
-  final title;
-  final body;
-  const DynamicDialog({this.title, this.body});
-  @override
-  _DynamicDialogState createState() => _DynamicDialogState();
-}
-
-class _DynamicDialogState extends State<DynamicDialog> {
-  @override
-  Widget build(BuildContext context) {
-    // You can change the UI as per
-    // your requirement or choice
-    return AlertDialog(
-      title: Text(widget.title),
-      actions: <Widget>[
-        OutlinedButton.icon(
-            label: const Text('Close'),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.close))
-      ],
-      content: Text(widget.body),
+  //show notification
+  static Future showBigTextNotification({
+    var id = 0,
+    required String title,
+    required String body,
+    var payload,
+  }) async {
+    await _notificationsPlugin.show(
+      id,
+      title,
+      body,
+      notificationDetails(),
     );
+    debugPrint("fln.show ****");
+  }
+
+  static Future showScheduleNotification({
+    var id = 0,
+    required String title,
+    required String body,
+    var payload,
+  }) async {
+    AndroidNotificationDetails androidPlatformChannelSpecifics =
+        const AndroidNotificationDetails(
+      "noti_channel_45454_sdssss_54544",
+      "channel_name",
+      playSound: true,
+      //  sound: RawResourceAndroidNotificationSound('notification'),
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+    debugPrint("androidPlatformChannelSpecifics ****");
+    var noti = NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+        iOS: const DarwinNotificationDetails());
+
+    await _notificationsPlugin.periodicallyShow(
+        id, title, body, RepeatInterval.everyMinute, noti);
+    debugPrint("fln.show ****");
   }
 }
